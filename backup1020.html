@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>AFWorkflowMonitor HTML</title>
+    <link rel="shortcut icon" href="{{SPLUNKWEB_URL_PREFIX}}/static/img/favicon.ico" />
+        <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="{{SPLUNKWEB_URL_PREFIX}}/static/css/build/pages/dashboard-simple-bootstrap.min.css" />
+</head>
+<body class="simplexml preload locale-en">
+  
+<!-- 
+BEGIN LAYOUT
+This section contains the layout for the dashboard. Splunk uses proprietary
+styles in <div> tags, similar to Bootstrap's grid system. 
+-->
+<a class="navSkip" href="#navSkip" tabindex="1">Screen reader users, click here to skip the navigation bar</a>
+<div class="header splunk-header">
+        <div id="placeholder-splunk-bar">
+            <a href="{{SPLUNKWEB_URL_PREFIX}}/app/launcher/home" class="brand" title="splunk &gt; listen to your data">splunk<strong>&gt;</strong></a>
+        </div>
+            <div id="placeholder-app-bar"></div>
+</div>
+<a id="navSkip"></a>
+
+<div class="dashboard-body container-fluid main-section-body" data-role="main">
+    <div class="dashboard-header clearfix">
+        <h2>AFWorkflowMonitor HTML</h2>
+        <p class="description">Monitor AF Server</p>
+    </div>
+   
+    <div style="display:none;position: fixed; top:0;left:0;width:100%;height:100%; background-color: rgba(0,0,0,0.8);z-index:10;">
+        <iframe width="640" height="480" src="" frameborder="0"></iframe>
+    </div>
+  <h2>Monitoring AF system status</h2>
+    <h2>Auto refresh and Generate Sound Alert</h2>
+
+    <div style="position: relative;left:0px; top:50px;">
+        <button style="height:60px;width:100px;color:#ffaa80;" onclick="myFunction()">Clear Alert</button>
+    </div>
+    <div style="Position: relative;top:50px; background-size: 1440px 500px;background-repeat: no-repeat;background-image: url(http://wiki.dev.fwmrm.net/download/attachments/79385535/Untitled%20Diagram-3.png?version=1&modificationDate=1476980357642&api=v2);">
+        <div id="progresstext">
+   <h2>...status...</h2>
+  </div>
+        <div id="panel1"  >
+            <div class="dashboard-panel clearfix"> 
+                <div style="position: relative; left:350px; top:420px;width: 600px;">
+                    <div id="element1" class="dashboard-element chart" style="width: 100%">
+                        <div class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="panel2" style="position: relative;left:0px; top:50px;width: 250px;" >
+            <div class="dashboard-panel clearfix">
+                
+                <div>
+                    <div id="element2" class="dashboard-element event" style="width: 100%">
+                        <div class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="panel3" style="position: relative;left:1150px; top:-200px;width: 250px;" >
+            <div class="dashboard-panel clearfix">
+                
+                <div>
+                    <div id="element3" class="dashboard-element event" style="width: 100%">
+                        <div class="panel-body"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 
+END LAYOUT
+-->
+
+<script src="{{SPLUNKWEB_URL_PREFIX}}/config?autoload=1"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/i18n.js"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/i18ncatalog?autoload=1"></script>
+<script src="{{SPLUNKWEB_URL_PREFIX}}/static/js/build/simplexml.min/config.js"></script>
+<script type="text/javascript">
+// <![CDATA[
+    function myFunction() {
+        clearPlay();
+        document.getElementById("progresstext").innerHTML=" ";
+    }
+    
+    function play() {
+        $("iframe").prop("src", "https://www.youtube.com/embed/KE3iCquVSQQ?autoplay=1");
+    }
+    
+    function clearPlay() {
+        $("iframe").prop("src", "");
+    }
+
+require.config({
+    baseUrl: "{{SPLUNKWEB_URL_PREFIX}}/static/js",
+    waitSeconds: 0 // Disable require.js load timeout
+});
+
+//
+// LIBRARY REQUIREMENTS
+//
+// In the require function, we include the necessary libraries and modules for
+// the HTML dashboard. Then, we pass variable names for these libraries and
+// modules as function parameters, in order.
+// 
+// When you add libraries or modules, remember to retain this mapping order
+// between the library or module and its function parameter. You can do this by
+// adding to the end of these lists, as shown in the commented examples below.
+require([
+    "splunkjs/mvc",
+    "splunkjs/mvc/utils",
+    "splunkjs/mvc/tokenutils",
+    "underscore",
+    "jquery",
+    "splunkjs/mvc/simplexml",
+    "splunkjs/mvc/headerview",
+    "splunkjs/mvc/footerview",
+    "splunkjs/mvc/simplexml/dashboardview",
+    "splunkjs/mvc/simplexml/dashboard/panelref",
+    "splunkjs/mvc/simplexml/element/chart",
+    "splunkjs/mvc/simplexml/element/event",
+    "splunkjs/mvc/simplexml/element/html",
+    "splunkjs/mvc/simplexml/element/list",
+    "splunkjs/mvc/simplexml/element/map",
+    "splunkjs/mvc/simplexml/element/single",
+    "splunkjs/mvc/simplexml/element/table",
+    "splunkjs/mvc/simplexml/element/visualization",
+    "splunkjs/mvc/simpleform/formutils",
+    "splunkjs/mvc/simplexml/eventhandler",
+    "splunkjs/mvc/simplexml/searcheventhandler",
+    "splunkjs/mvc/simpleform/input/dropdown",
+    "splunkjs/mvc/simpleform/input/radiogroup",
+    "splunkjs/mvc/simpleform/input/linklist",
+    "splunkjs/mvc/simpleform/input/multiselect",
+    "splunkjs/mvc/simpleform/input/checkboxgroup",
+    "splunkjs/mvc/simpleform/input/text",
+    "splunkjs/mvc/simpleform/input/timerange",
+    "splunkjs/mvc/simpleform/input/submit",
+    "splunkjs/mvc/searchmanager",
+    "splunkjs/mvc/savedsearchmanager",
+    "splunkjs/mvc/postprocessmanager",
+    "splunkjs/mvc/simplexml/urltokenmodel"
+    // Add comma-separated libraries and modules manually here, for example:
+    // ..."splunkjs/mvc/simplexml/urltokenmodel",
+    // "splunkjs/mvc/tokenforwarder"
+    ],
+    function(
+        mvc,
+        utils,
+        TokenUtils,
+        _,
+        $,
+        DashboardController,
+        HeaderView,
+        FooterView,
+        Dashboard,
+        PanelRef,
+        ChartElement,
+        EventElement,
+        HtmlElement,
+        ListElement,
+        MapElement,
+        SingleElement,
+        TableElement,
+        VisualizationElement,
+        FormUtils,
+        EventHandler,
+        SearchEventHandler,
+        DropdownInput,
+        RadioGroupInput,
+        LinkListInput,
+        MultiSelectInput,
+        CheckboxGroupInput,
+        TextInput,
+        TimeRangeInput,
+        SubmitButton,
+        SearchManager,
+        SavedSearchManager,
+        PostProcessManager,
+        UrlTokenModel
+
+        // Add comma-separated parameter names here, for example: 
+        // ...UrlTokenModel, 
+        // TokenForwarder
+        ) {
+        var pageLoading = true;
+        // 
+        // TOKENS
+        //
+        // Create token namespaces
+        var urlTokenModel = new UrlTokenModel();
+        mvc.Components.registerInstance('url', urlTokenModel);
+        var defaultTokenModel = mvc.Components.getInstance('default', {create: true});
+        var submittedTokenModel = mvc.Components.getInstance('submitted', {create: true});
+
+        urlTokenModel.on('url:navigate', function() {
+            defaultTokenModel.set(urlTokenModel.toJSON());
+            if (!_.isEmpty(urlTokenModel.toJSON()) && !_.all(urlTokenModel.toJSON(), _.isUndefined)) {
+                submitTokens();
+            } else {
+                submittedTokenModel.clear();
+            }
+        });
+        // Initialize tokens
+        defaultTokenModel.set(urlTokenModel.toJSON());
+
+        function submitTokens() {
+            // Copy the contents of the defaultTokenModel to the submittedTokenModel and urlTokenModel
+            FormUtils.submitForm({ replaceState: pageLoading });
+        }
+
+        function setToken(name, value) {
+            defaultTokenModel.set(name, value);
+            submittedTokenModel.set(name, value);
+        }
+
+        function unsetToken(name) {
+            defaultTokenModel.unset(name);
+            submittedTokenModel.unset(name);
+        }
+
+        //
+        // SEARCH MANAGERS
+        //
+        // Load individual components
+        var SearchManager = require("splunkjs/mvc/searchmanager");
+        var search1 = new SearchManager({
+            "id": "search1",
+            "sample_ratio": null,
+            "search": "index=af  sourcetype=system_stats host=*afworker*|dedup host | rename \"memory.MemTotal\" as Total  \"memory.MemUsed\" as Used| eval Total=round(Total/1024/1024/1024,2)|eval Used=round(Used/1024/1024/1024,2)|eval mem=round(Used/Total*100,2)| eval cpu=round(100-'cpustat.idle',2)|sort host |table host cpu mem",
+            "status_buckets": 0,
+            "earliest_time": "-15m",
+            "cancelOnUnload": true,
+            "latest_time": "now",
+            "auto_cancel": 90,
+            "preview": true,
+            "runWhenTimeIsUndefined": false
+        }, {tokens: true, tokenNamespace: "submitted"});
+
+        var search2 = new SearchManager({
+            "id": "search2",
+            "sample_ratio": null,
+            "search": "index=alerts \"*AF*\" NOT source=\"*nagios*\"|table _raw|head 2",
+            "status_buckets": 300,
+            "earliest_time": "-30d",
+            "cancelOnUnload": true,
+            "latest_time": "now",
+            "auto_cancel": 90,
+            "preview": true,
+            "runWhenTimeIsUndefined": false
+        }, {tokens: true, tokenNamespace: "submitted"});
+
+        var search3 = new SearchManager({
+            "id": "search3",
+            "sample_ratio": null,
+            "search": "index=alerts \"*AF*\" NOT source=\"*nagios*\"|table _raw|head 3",
+            "status_buckets": 300,
+            "earliest_time": "-24h@h",
+            "cancelOnUnload": true,
+            "latest_time": "now",
+            "auto_cancel": 90,
+            "preview": true,
+            "runWhenTimeIsUndefined": false
+        }, {tokens: true, tokenNamespace: "submitted"});
+
+        search3.on('search:done', function(properties) {
+            document.getElementById("progresstext").innerHTML="Done!";
+        });
+
+        var mainSearch = splunkjs.mvc.Components.get("search2");
+        var myResults = mainSearch.data("preview", { count: 1, offset: 0 });
+        myResults.on("data", function() {
+          if(myResults.hasData()){
+            play();
+            document.getElementById("progresstext").innerHTML="<span style='color:#FF0000;font-size:300%;'> ALERT! </span>";
+          }
+        });
+        //
+        // SPLUNK HEADER AND FOOTER
+        //
+
+        new HeaderView({
+            id: 'header',
+            section: 'dashboards',
+            el: $('.header'),
+            acceleratedAppNav: true,
+            useSessionStorageCache: true,
+            splunkbar: true,
+            appbar: true,
+            litebar: false,
+        }, {tokens: true}).render();
+
+        new FooterView({
+            id: 'footer',
+            el: $('.footer')
+        }, {tokens: true}).render();
+
+
+        //
+        // DASHBOARD EDITOR
+        //
+
+        new Dashboard({
+            id: 'dashboard',
+            el: $('.dashboard-body'),
+            showTitle: true,
+            editable: true
+        }, {tokens: true}).render();
+
+
+        //
+        // VIEWS: VISUALIZATION ELEMENTS
+        //
+
+        var element1 = new ChartElement({
+            "id": "element1",
+            "charting.axisLabelsX.majorLabelStyle.overflowMode": "ellipsisNone",
+            "charting.axisTitleY.visibility": "visible",
+            "charting.axisY.scale": "linear",
+            "charting.axisY2.scale": "inherit",
+            "charting.chart": "column",
+            "charting.layout.splitSeries.allowIndependentYRanges": "0",
+            "charting.axisX.scale": "linear",
+            "charting.chart.showDataLabels": "none",
+            "charting.chart.bubbleSizeBy": "area",
+            "charting.layout.splitSeries": "1",
+            "charting.chart.nullValueMode": "gaps",
+            "charting.axisTitleX.visibility": "visible",
+            "charting.chart.bubbleMaximumSize": "50",
+            "charting.chart.stackMode": "default",
+            "charting.legend.placement": "right",
+            "charting.axisTitleY2.visibility": "visible",
+            "charting.axisY2.enabled": "0",
+            "charting.chart.bubbleMinimumSize": "10",
+            "charting.chart.style": "shiny",
+            "charting.chart.sliceCollapsingThreshold": "0.01",
+            "resizable": true,
+            "charting.axisLabelsX.majorLabelStyle.rotation": "0",
+            "charting.legend.labelStyle.overflowMode": "ellipsisMiddle",
+            "charting.drilldown": "all",
+            "managerid": "search1",
+            "refresh.auto.interval": "30",
+            "el": $('#element1')
+
+        }, {tokens: true, tokenNamespace: "submitted"}).render();
+
+        var element2 = new TableElement({
+            "id": "element2",
+            "managerid": "search2",
+            "refresh.auto.interval": "30",
+            "el": $('#element2')
+        }, {tokens: true, tokenNamespace: "submitted"}).render();
+
+        var element3 = new TableElement({
+            "id": "element3",
+            "managerid": "search3",
+            "refresh.auto.interval": "30",
+            "el": $('#element3')
+        }, {tokens: true, tokenNamespace: "submitted"}).render();
+
+        // Initialize time tokens to default
+        if (!defaultTokenModel.has('earliest') && !defaultTokenModel.has('latest')) {
+            defaultTokenModel.set({ earliest: '0', latest: '' });
+        }
+        submitTokens();
+        //
+        // DASHBOARD READY
+        //
+        DashboardController.ready();
+        pageLoading = false;
+    }
+);
+// ]]>
+</script>
+</body>
+</html>
